@@ -140,13 +140,6 @@ function App() {
     }
   ];
 
-  //const api = Axios.create();
-  // const [{ data: getData}] = useAxios(
-  //   'https://opentdb.com/api.php?amount=5&difficulty=easy&type=multiple'
-  // )
-  // console.log(JSON.stringify(getData));
-
-
   const [questionNumber, setQuestionNumber] = useState(1);
   const [userName, setUserName] = useState(null);
   const [stop, setStop] = useState(false);
@@ -159,9 +152,7 @@ function App() {
       const result = await axios(
         'https://opentdb.com/api.php?amount=15&difficulty=easy&type=multiple',
       );
-
-      setFakeData(result.data.results);
-      
+      setFakeData(result.data.results);    
     };
     fetchData();
   }, [])
@@ -188,23 +179,15 @@ function App() {
 
   useEffect(()=>{
     setData(
-      fakeData.map( (e, i) => (
-        {id: i, question: e.question, answers:[{text: e.correct_answer, correct: true}]}
-      ))
+      fakeData.map( (e, i) => {
+         return {id: i, question: e.question, answers:[{text: e.correct_answer, correct: true}, ...e.incorrect_answers.map(e => ({text: e, correct: false}))]}
+      })
     )
      
-    // setData(
-    //   fakeData.map( (e, i) => (
-    //     {answers:[{text: e.incorrect_answers, correct: false}, ...data[i].answers]}
-    //   ))
-    // )
   }, [fakeData])
 
 
-  
-
   console.log("api: ", (fakeData));
-  // console.log("api: ", (fakeData[0].incorrect_answers));
   console.log("data: ", data);
   // console.log(data1);
 
@@ -228,18 +211,16 @@ function App() {
                   />
                   </div>
                 </div>
-            <div className="bottom">
-            <Quiz 
-              key={data.id}
-              data={data} 
-              setStop={setStop} 
-              questionNumber={questionNumber} 
-              setQuestionNumber={setQuestionNumber} 
-          />
-        </div>
- 
-
-          </>
+                <div className="bottom">
+                <Quiz 
+                  key={data.id}
+                  data={data} 
+                  setStop={setStop} 
+                  questionNumber={questionNumber} 
+                  setQuestionNumber={setQuestionNumber} 
+                />
+                </div>
+            </>
         )}
         
       </div>
